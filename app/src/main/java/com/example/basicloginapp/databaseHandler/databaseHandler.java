@@ -9,13 +9,14 @@ import android.util.Log;
 
 public class databaseHandler extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "loginappdb";
+    private static final String DB_NAME = "loginappdb.db";
     private static final String TABLE_NAME = "USERDATA";
     private static final String ID_COL = "id";
     private static final String NAME_COL = "name";
     private static final String EMAIL_COL = "email";
     private static final String PASSWORD_COL = "password";
     private static final int DB_VERSION = 3;
+    private static final String DATABASE_PATH = "/data/data/com.example.basicloginapp.databaseHandler/databases/" ;
 
     SQLiteDatabase db = this.getReadableDatabase();
 
@@ -76,6 +77,7 @@ public class databaseHandler extends SQLiteOpenHelper {
 
     public boolean checkUserExist(String username, String password){
         String[] columns = {"email"};
+        db = openDatabase();
 
         String selection = "email=? and password = ?";
         String[] selectionArgs = {username, password};
@@ -91,6 +93,12 @@ public class databaseHandler extends SQLiteOpenHelper {
         } else {
             return false;
         }
+    }
+
+    private SQLiteDatabase openDatabase(){
+        String path = DATABASE_PATH + DB_NAME;
+        db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
+        return db;
     }
 
 

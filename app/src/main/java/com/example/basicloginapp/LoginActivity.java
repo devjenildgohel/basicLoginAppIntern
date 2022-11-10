@@ -102,8 +102,6 @@ public class LoginActivity extends AppCompatActivity {
             }
 
 
-
-
             private boolean emailVerification(String userEmail) {
 
                 String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
