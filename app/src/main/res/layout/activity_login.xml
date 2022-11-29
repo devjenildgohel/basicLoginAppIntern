@@ -1,33 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:orientation="vertical"
+    >
 
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/dummy_logo"
-        app:layout_constraintBottom_toTopOf="@id/loginArea"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.033" />
-
-
-    <ScrollView
-        android:id="@+id/loginArea"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,66 +19,95 @@
             android:padding="7dp"
             >
 
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dummy_logo"
+                android:layout_centerHorizontal="true"
+                />
+
             <TextView
                 android:id="@+id/LoginText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Register"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="Login"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="10dp"
+                android:layout_below="@id/imageView"
                 />
 
-            <EditText
-                android:id="@+id/emailEditext"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/LoginText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:background="@drawable/edittext_bg"
-                android:hint="@string/email_hint"
-                android:padding="15sp"
                 android:layout_marginBottom="10dp"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:drawableStart="@drawable/ic_baseline_email_24"
-                android:drawablePadding="15dp"
-                />
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                android:clipToPadding="false"
+                app:hintTextColor="@color/black"
+                >
 
-            <EditText
-                android:id="@+id/passwordEdittext"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailEditext"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableStart="@drawable/ic_baseline_email_24"
+                    android:background="@android:color/transparent"
+                    android:ellipsize="end"
+                    android:drawablePadding="10dp"
+                    app:errorEnabled="true"
+                    android:hint="@string/email_hint"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:padding="18dp"
+                    android:textCursorDrawable="@drawable/color_cursor" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/passwordTextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/emailEditext"
-                android:background="@drawable/edittext_bg"
-                android:hint="@string/password_hint"
-                android:padding="15sp"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:drawableStart="@drawable/ic_baseline_email_24"
-                android:drawablePadding="15dp"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/emailTextInputLayout"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                android:clipToPadding="false"
+                app:hintTextColor="@color/black"
+                app:passwordToggleEnabled="true"
 
-                />
+                >
 
-            <CheckBox
-                android:id="@+id/showPasswordCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/passwordEdittext"
-                android:hint="Show Password"
-                android:textSize="14sp"
-                android:layout_centerInParent="true"
-                android:buttonTint="@color/black"
-                />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordEdittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/edittext_bg"
+                    android:drawableStart="@drawable/ic_baseline_password_24"
+                    android:drawablePadding="10dp"
+                    android:ellipsize="end"
+                    android:hint="@string/password_hint"
+                    app:errorEnabled="true"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:padding="18dp"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/loginButton"
-                android:layout_width="100dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/showPasswordCheckbox"
+                android:layout_below="@+id/passwordTextInputLayout"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_bg"
                 android:text="Login"
@@ -102,23 +115,40 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/goToRegistration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/loginButton"
-                android:layout_centerInParent="true"
-                android:text="Register Now !"
-                android:layout_marginTop="8dp"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                />
+          <androidx.appcompat.widget.LinearLayoutCompat
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_below="@id/loginButton"
+              android:gravity="center_horizontal"
+              android:layout_marginTop="10dp"
+              >
+
+              <TextView
+                  android:id="@+id/newUserTextView"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_below="@+id/loginButton"
+                  android:layout_marginTop="8dp"
+                  android:text="New Here ? "
+                  android:textSize="18sp"
+                  android:textStyle="bold" />
+
+              <TextView
+                  android:id="@+id/goToRegistration"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_below="@+id/loginButton"
+                  android:layout_toEndOf="@id/newUserTextView"
+                  android:layout_marginTop="8dp"
+                  android:textColor="@android:color/holo_red_dark"
+                  android:text=" Register Now !"
+                  android:textSize="18sp"
+                  android:textStyle="bold" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
 
         </RelativeLayout>
 
+</ScrollView>
 
-    </ScrollView>
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

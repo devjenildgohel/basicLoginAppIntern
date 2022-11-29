@@ -2,4 +2,7 @@
     <string name="app_name">Basic Login App</string>
     <string name="email_hint">abc@xyz.com</string>
     <string name="password_hint">Password</string>
+    <string name="reTypepassword_hint">Re-Type Password</string>
+    <string name="name_hint">Name</string>
+    <string name="password_regEx">^(?=.*[@#$%^+=])?=\\S+$.{8,}</string>
 </resources>

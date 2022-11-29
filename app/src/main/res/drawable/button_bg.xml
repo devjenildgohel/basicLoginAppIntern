@@ -4,7 +4,7 @@
     android:tint="@color/black"
     >
      <corners
-        android:radius="20sp"
+        android:radius="40sp"
         />
 
 </shape>
