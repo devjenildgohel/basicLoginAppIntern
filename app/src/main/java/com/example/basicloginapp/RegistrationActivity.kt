@@ -89,7 +89,8 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun emailEditTextWatcher(emailEditText: TextInputEditText?, emailLayout: TextInputLayout?) {
-        emailEditText!!.doOnTextChanged { text, _, _, _ ->
+
+        emailEditText?.doOnTextChanged { text, _, _, _ ->
             run{
                 if(!emailVerification(text.toString()))
                     emailLayout!!.error = "Please Enter Valid Email"
@@ -98,7 +99,7 @@ class RegistrationActivity : AppCompatActivity() {
             }
         }
 
-        emailEditText.doAfterTextChanged { editable: Editable? ->
+        emailEditText?.doAfterTextChanged { editable: Editable? ->
             run{
                 if(editable!!.isNotEmpty() && emailVerification(editable.toString()))
                 {

@@ -124,8 +124,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/showPasswordCheckbox"
                 android:layout_gravity="center"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
+                android:layout_marginStart="90dp"
+                android:layout_marginEnd="90dp"
                 android:layout_marginTop="20dp"
                 android:text="Register Now"
                 style="@style/buttonStyle" />
