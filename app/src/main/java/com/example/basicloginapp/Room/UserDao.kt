@@ -11,13 +11,13 @@ import androidx.room.Update
 interface UserDao {
 
     @Insert
-    fun insertUser(userDataClass: UserDataClass)
+    fun insert(userDataClass: UserDataClass)
 
     @Update
-    fun updateUser(userDataClass: UserDataClass)
+    fun update(userDataClass: UserDataClass)
 
     @Delete
-    fun deleteUser(userDataClass: UserDataClass)
+    fun delete(userDataClass: UserDataClass)
 
     @Query("select * FROM USERDATA")
     fun getAllUsers() : LiveData<List<UserDataClass>>

@@ -89,7 +89,7 @@ class RegistrationActivity : AppCompatActivity() {
                 else {
                     try
                     {
-                        db!!.userDao().insertUser(newUser)
+                        db!!.userDao().insert(newUser)
                         val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         Toast.makeText(this, "Registration Successful !", Toast.LENGTH_SHORT).show()
