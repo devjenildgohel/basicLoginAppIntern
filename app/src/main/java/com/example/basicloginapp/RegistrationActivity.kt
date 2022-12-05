@@ -1,18 +1,17 @@
 package com.example.basicloginapp
 
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputEditText
-import androidx.appcompat.widget.AppCompatButton
-import com.example.basicloginapp.databaseHandler.databaseHandler
-import android.os.Bundle
 import android.content.Intent
+import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
+import com.example.basicloginapp.Room.AppDatabase
+import com.example.basicloginapp.Room.UserDataClass
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.lang.Exception
 import java.util.regex.Pattern
 
 class RegistrationActivity : AppCompatActivity() {
@@ -33,7 +32,7 @@ class RegistrationActivity : AppCompatActivity() {
     private var userEmail: String? = null
     private var userPassword: String? = null
     private var userReTypePassword: String? = null
-    private var dbhandler: databaseHandler? = null
+    private var db: AppDatabase? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,13 +49,12 @@ class RegistrationActivity : AppCompatActivity() {
         passwordLayout = findViewById(R.id.passwordTextInputLayout)
         retypepasswordLayout = findViewById(R.id.reType_passwordTextInputLayout)
 
-        dbhandler = databaseHandler(applicationContext)
 
-
-        editTextWatcher(name,nameLayout)
-        emailEditTextWatcher(email,emailLayout)
+        editTextWatcher(name, nameLayout)
+        emailEditTextWatcher(email, emailLayout)
         passwordEditTextWatcher(password, retypepassword, passwordLayout, retypepasswordLayout)
 
+        db = AppDatabase.getDatabase(baseContext)
 
         registerButton!!.setOnClickListener {
             userName = name!!.text.toString()
@@ -64,45 +62,64 @@ class RegistrationActivity : AppCompatActivity() {
             userPassword = password!!.text.toString()
             userReTypePassword = retypepassword!!.text.toString()
 
-            if(
-                emailVerification(userEmail!!) &&
-                passwordVerification(userPassword!!)) {
-                try{
-                        userRegisteration(userName!!, userEmail!!, userPassword!!)
-                }
-                catch (e : Exception)
-                {
-                    Log.e("TAG", "onCreate: $e")
-                }
-
-                val intent =
-                    Intent(this@RegistrationActivity, LoginActivity::class.java)
-                intent.flags =
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-            }
-            else
+            if(userName!!.isEmpty())
             {
-                Toast.makeText(baseContext, "Please Fill Required Fields", Toast.LENGTH_SHORT).show()
+                nameLayout!!.error = "Name Required !"
             }
+            if(userEmail!!.isEmpty())
+            {
+                emailLayout!!.error = "Email Required !"
+            }
+            if(userPassword!!.isEmpty())
+            {
+                passwordLayout!!.error = "Password Required !"
+            }
+            if(userReTypePassword!!.isEmpty())
+            {
+                retypepasswordLayout!!.error = "Required !"
+            }
+
+            val newUser = UserDataClass(null, userName!!, userEmail!!, userPassword!!)
+
+            if (emailVerification(userEmail!!) && passwordVerification(userPassword!!)) {
+
+                if (db!!.userDao().isUserExists(userEmail.toString())) {
+                    emailLayout!!.error = "User Already Exists"
+                }
+                else {
+                    try
+                    {
+                        db!!.userDao().insertUser(newUser)
+                        val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        Toast.makeText(this, "Registration Successful !", Toast.LENGTH_SHORT).show()
+                        startActivity(intent)
+                    }
+                    catch (e : Exception)
+                    {
+                        Toast.makeText(this, "Ooops ! Something Went Wrong ! $e", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
         }
     }
 
-    private fun emailEditTextWatcher(emailEditText: TextInputEditText?, emailLayout: TextInputLayout?) {
+    private fun emailEditTextWatcher(
+        emailEditText: TextInputEditText?, emailLayout: TextInputLayout?
+    ) {
 
         emailEditText?.doOnTextChanged { text, _, _, _ ->
-            run{
-                if(!emailVerification(text.toString()))
-                    emailLayout!!.error = "Please Enter Valid Email"
-                if(text!!.isEmpty())
-                    emailLayout!!.error = "Email Required !"
+            run {
+                if (!emailVerification(text.toString())) emailLayout!!.error =
+                    "Please Enter Valid Email"
+                if (text!!.isEmpty()) emailLayout!!.error = "Email Required !"
             }
         }
 
         emailEditText?.doAfterTextChanged { editable: Editable? ->
-            run{
-                if(editable!!.isNotEmpty() && emailVerification(editable.toString()))
-                {
+            run {
+                if (editable!!.isNotEmpty() && emailVerification(editable.toString())) {
                     emailLayout!!.error = null
                     emailLayout.clearFocus()
                 }
@@ -112,16 +129,14 @@ class RegistrationActivity : AppCompatActivity() {
 
     private fun editTextWatcher(nameEditText: TextInputEditText?, nameLayout: TextInputLayout?) {
         nameEditText!!.doOnTextChanged { text, _, _, _ ->
-            run{
-                if(text!!.isEmpty())
-                    nameLayout!!.error = "Name cannot be empty"
+            run {
+                if (text!!.isEmpty()) nameLayout!!.error = "Name cannot be empty"
             }
         }
-        
+
         nameEditText.doAfterTextChanged { editable: Editable? ->
-            run{
-                if(editable!!.isNotEmpty())
-                {
+            run {
+                if (editable!!.isNotEmpty()) {
                     nameLayout!!.error = null
                     nameLayout.clearFocus()
                 }
@@ -130,25 +145,24 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun passwordEditTextWatcher(
-        passwordEditText : TextInputEditText?,
-        retypePasswordEditText : TextInputEditText?,
-        passwordLayout : TextInputLayout?,
-        retypepasswordLayout: TextInputLayout?)
-    {
+        passwordEditText: TextInputEditText?,
+        retypePasswordEditText: TextInputEditText?,
+        passwordLayout: TextInputLayout?,
+        retypepasswordLayout: TextInputLayout?
+    ) {
         passwordEditText!!.doOnTextChanged { text: CharSequence?, _: Int, _: Int, _: Int ->
             run {
                 //password 8 char validation
-                if (text!!.length < 8)
-                    passwordLayout!!.error = "Password length must be greater than 8"
-                else
-                {
+                if (text!!.length < 8) passwordLayout!!.error =
+                    "Password length must be greater than 8"
+                else {
                     passwordLayout!!.error = null
                     passwordLayout.clearFocus()
                 }
 
                 //password RegEx validation
-                if (text.length >= 8 && !passwordVerification(text.toString()))
-                    passwordLayout.error = "Password must contains !@#$%^&*()?><:"
+                if (text.length >= 8 && !passwordVerification(text.toString())) passwordLayout.error =
+                    "Password must contains !@#$%^&*()?><:"
 
             }
         }
@@ -156,18 +170,11 @@ class RegistrationActivity : AppCompatActivity() {
         retypePasswordEditText!!.doOnTextChanged { text: CharSequence?, _: Int, _: Int, _: Int ->
             run {
                 //retypepassword == password validation
-               if(text!!.trim() != passwordEditText.text!!.trim())
-                   retypepasswordLayout!!.error = "Password doesnot matched !"
+                if (text!!.trim() != passwordEditText.text!!.trim()) retypepasswordLayout!!.error =
+                    "Password doesnot matched !"
 
                 //remove error after validation checked
-                if(
-                    text.isNotEmpty() && text.length > 8 &&
-                    passwordVerification(text.toString()) &&
-                    retypePasswordEditText.text!!.trim().toString() == passwordEditText.text!!.trim().toString()
-                ) {
-                    retypepasswordLayout!!.error = null
-                    retypepasswordLayout.clearFocus()
-                }
+
             }
         }
 
@@ -177,35 +184,30 @@ class RegistrationActivity : AppCompatActivity() {
                 //empty edittext validation
                 if (editable!!.isEmpty()) passwordLayout!!.error = "Required"
                 //remove error after validation checked
-                if(editable.isNotEmpty() && editable.length > 8 && passwordVerification(editable.toString()))
+                if (editable.isNotEmpty() && editable.length > 8 && passwordVerification(editable.toString())) {
                     passwordLayout!!.error = null
-                    passwordLayout!!.clearFocus()
+                    passwordLayout.clearFocus()
+                }
+
 
             }
         }
-        
+
         retypePasswordEditText.doAfterTextChanged { editable: Editable? ->
-            run{
+            run {
                 //empty edittext validation
                 if (editable!!.isEmpty()) retypepasswordLayout!!.error = "Required"
 
+                if (editable.isNotEmpty() && editable.length > 8 && passwordVerification(editable.toString()) && retypePasswordEditText.text!!.trim()
+                        .toString() == passwordEditText.text!!.trim().toString()
+                ) {
+                    retypepasswordLayout!!.error = null
+                    retypepasswordLayout.clearFocus()
+                }
             }
         }
     }
 
-    private fun userRegisteration(userName: String, userEmail: String, userPassword: String) {
-        try {
-            if (dbhandler!!.userCheck(userEmail) == "not found") {
-                dbhandler!!.addNewUser(userName, userEmail, userPassword)
-                Toast.makeText(this, "Registration Successfully !", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "user exists", Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error : $e", Toast.LENGTH_LONG).show()
-            Log.e("TAG", e.toString())
-        }
-    }
 
     private fun emailVerification(userEmail: String): Boolean {
         return (userEmail.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail)
